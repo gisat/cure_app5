@@ -8,11 +8,12 @@ import json
 # todo: upravit tvorbu adresa5u v grassdata
 @click.command()
 @click.option('--dem',  help='Location of the DEM raster relative to the mount volume')
+@click.option('--waterlevel', default=5, help='Height of the water level (m)', type=float)
 @click.option('--name', default='run', help='Name of the run (default = run)')
 @click.option('--debug', default=False, help='Debug mode')
-def cli(debug, name, dem):
+def cli(debug, name, dem, waterlevel):
     # configs
-    config = Config(dem=dem, name=name)
+    config = Config(dem=dem, name=name, waterlevel=waterlevel)
     grass_config = GrassConfig(**GRASS_CONFIG, name=name)
 
     # logger

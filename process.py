@@ -49,12 +49,13 @@ class Flood(BaseModel):
     dem: Path
     output: Path
     name: str
+    waterlevel: int = 5
     DTM: str = 'Terrain_model'
     DRAIN: str = 'drain_py2'
     STRE: str = 'str_py2'
     ACUM: str = 'acc_py3'
     THRESHOLD: int = 10000
-    WATERLEVEL: int = 5
+
 
     def process(self):
         logger.info('Processing started')
@@ -76,7 +77,7 @@ class Flood(BaseModel):
                method='downstream', difference='above_py2', overwrite=True)
         logger.info('Calculation: Stream.distance - finished')
 
-        Module('r.lake', elevation='above_py2', water_level=self.WATERLEVEL, lake='flood_py2', seed=self.STRE,
+        Module('r.lake', elevation='above_py2', water_level=self.waterlevel, lake='flood_py2', seed=self.STRE,
                overwrite=True)
         logger.info('Calculation: Lake - finished')
 
@@ -97,5 +98,5 @@ class Flood(BaseModel):
 
 if __name__ == "__main__":
     config = Config(**dict(load_json('config.json')))
-    flood = Flood(dem=config.dem, output=config.output, name=config.name)
+    flood = Flood(dem=config.dem, output=config.output, name=config.name, waterlevel=config.waterlevel)
     flood.process()

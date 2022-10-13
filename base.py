@@ -56,6 +56,7 @@ class Config(BaseModel):
     dem: Path = Field(alias='dem_path')
     name: str = Field(default='run')
     mount: Path = Field(default=MOUNT)
+    waterlevel: float = Field(default=5)
 
     @validator('dem', pre=True)
     def set_path(cls, value):
