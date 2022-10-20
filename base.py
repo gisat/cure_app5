@@ -1,8 +1,12 @@
 from pathlib import Path
 import os
 import logging
+from typing import Optional, Tuple
+
 from pydantic import BaseModel, Field, validator
 import json
+from shapely.geometry import Polygon, box
+import pyproj
 
 
 GRASS_CONFIG = {'GISBASE': r'/usr/local/grass',
@@ -15,6 +19,8 @@ MOUNT = Path(os.environ['mount'])
 GRASS_EXTENSION_URL = 'http://svn.osgeo.org/grass/grass-addons/grass7'
 
 logger = logging.getLogger('root')
+
+BBOX_CRS = pyproj.Proj('epsg:4326')
 
 
 class PosixPathEncoder(json.JSONEncoder):
@@ -57,10 +63,15 @@ class Config(BaseModel):
     name: str = Field(default='run')
     mount: Path = Field(default=MOUNT)
     waterlevel: float = Field(default=5)
+    bbox: Optional[Tuple[float, float, float, float]]
 
     @validator('dem', pre=True)
     def set_path(cls, value):
         return MOUNT / Path(value)
+
+    @property
+    def geometry(self) -> Polygon:
+        return box(*self.bbox)
 
     @property
     def output(self):
@@ -76,6 +87,4 @@ class Config(BaseModel):
 
     class Config:
         allow_population_by_field_name = True
-
-if __name__ == "__main__":
-    pass
+        arbitrary_types_allowed = True

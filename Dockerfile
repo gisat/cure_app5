@@ -16,7 +16,4 @@ ENV mount /mnt
 
 COPY . .
 
-
 ENTRYPOINT  ["python3","-m", "main"]
-
-#CMD  ["python", "main.py"]

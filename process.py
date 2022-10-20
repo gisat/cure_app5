@@ -8,6 +8,8 @@ import grass.script.setup as gsetup
 from grass.pygrass.modules import Module
 from subprocess import run, CompletedProcess
 
+from logger import set_logger
+
 logger = logging.getLogger('root')
 
 RECODE = """
@@ -49,13 +51,12 @@ class Flood(BaseModel):
     dem: Path
     output: Path
     name: str
-    waterlevel: int = 5
+    waterlevel: float
     DTM: str = 'Terrain_model'
     DRAIN: str = 'drain_py2'
     STRE: str = 'str_py2'
     ACUM: str = 'acc_py3'
     THRESHOLD: int = 10000
-
 
     def process(self):
         logger.info('Processing started')
@@ -98,5 +99,7 @@ class Flood(BaseModel):
 
 if __name__ == "__main__":
     config = Config(**dict(load_json('config.json')))
+    logger = set_logger('root', config.logs / f'{config.name}.log')
+
     flood = Flood(dem=config.dem, output=config.output, name=config.name, waterlevel=config.waterlevel)
     flood.process()
