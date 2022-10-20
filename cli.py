@@ -5,8 +5,6 @@ from logger import set_logger
 from process import set_up_grass, run_app
 from preprocess import preprocess_input_raster
 
-
-# todo: upravit tvorbu adresa5u v grassdata
 @click.command()
 @click.option('--dem',  help='Location of the DEM raster relative to the mount volume')
 @click.option('--waterlevel', default=5, help='Height of the water level (m)', type=float)
